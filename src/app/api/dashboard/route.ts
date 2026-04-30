@@ -22,7 +22,7 @@ export async function GET() {
     const overdueTasks = await prisma.task.count({
       where: {
         ...baseWhere,
-        dueDate: { lt: now },
+        deadline: { lt: now },
         status: { not: "DONE" }
       }
     });

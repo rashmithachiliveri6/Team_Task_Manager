@@ -16,6 +16,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <Link href="/dashboard" className="nav-item">Overview</Link>
           <Link href="/dashboard/projects" className="nav-item">Projects</Link>
           <Link href="/dashboard/tasks" className="nav-item">Tasks</Link>
+          <Link href="/dashboard/notifications" className="nav-item" style={{color: 'var(--primary)'}}>Notifications</Link>
         </nav>
         <div className="sidebar-footer">
           <div className="user-info">
