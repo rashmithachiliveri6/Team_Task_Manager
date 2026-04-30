@@ -1,0 +1,48 @@
+.home-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+.hero {
+  text-align: center;
+  animation: fadeIn 0.8s ease;
+}
+.hero-title {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+.hero-subtitle {
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+.cta-container {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+.btn {
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+}
+.btn-primary {
+  background-color: var(--primary);
+  color: #fff;
+}
+.btn-primary:hover {
+  background-color: var(--primary-hover);
+}
+.btn-secondary {
+  background-color: var(--surface);
+  border: 1px solid var(--border-color);
+}
+.btn-secondary:hover {
+  background-color: var(--card-bg);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
