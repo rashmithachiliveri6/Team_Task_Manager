@@ -9,8 +9,8 @@ export default function AdminDashboard() {
   const [taskers, setTaskers] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
-  const [view, setView] = useState("dashboard"); // dashboard, create-tasker, assign-task
-
+  const [view, setView] = useState("dashboard"); // dashboard, create-tasker, assign-task, projects
+  const [projects, setProjects] = useState<any[]>([]);
   // Create Tasker state
   const [newTasker, setNewTasker] = useState({ name: "", email: "", password: "", department: "" });
 
@@ -19,7 +19,14 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchTaskers();
+    fetchProjects();
   }, []);
+
+  const fetchProjects = async () => {
+    const res = await fetch("/api/projects");
+    const data = await res.json();
+    if (data.projects) setProjects(data.projects);
+  };
 
   const fetchTaskers = async () => {
     try {
@@ -105,6 +112,9 @@ export default function AdminDashboard() {
           </button>
           <button onClick={() => setView("assign-task")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${view === "assign-task" ? "bg-blue-600/20 text-blue-400 border border-blue-500/30" : "hover:bg-slate-800 text-slate-400"}`}>
             <PlusCircle size={18} /> Assign Task
+          </button>
+          <button onClick={() => setView("projects")} className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${view === "projects" ? "bg-blue-600/20 text-blue-400 border border-blue-500/30" : "hover:bg-slate-800 text-slate-400"}`}>
+            <LayoutDashboard size={18} /> Manage Projects
           </button>
         </nav>
         <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-red-500/10 text-slate-400 hover:text-red-400 transition-all mt-auto">
@@ -270,6 +280,47 @@ export default function AdminDashboard() {
               </div>
               <button type="submit" disabled={!newTask.assignedToId} className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-colors mt-4 disabled:opacity-50 disabled:cursor-not-allowed">Dispatch Task</button>
             </form>
+          </div>
+        )}
+        {view === "projects" && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-white">Project Management</h2>
+              <button 
+                onClick={() => { /* Modal logic or simple redirect */ window.location.href='/dashboard/projects' }}
+                className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+              >
+                Open Full Project View
+              </button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {projects.map(p => (
+                <div key={p.id} className="bg-slate-800/40 border border-slate-700/50 p-6 rounded-2xl backdrop-blur-sm shadow-xl">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="font-bold text-white text-lg">{p.name}</h3>
+                    <span className="text-xs bg-blue-500/20 text-blue-400 px-2 py-1 rounded-full border border-blue-500/30">{p.progress}%</span>
+                  </div>
+                  <p className="text-slate-400 text-sm mb-4 line-clamp-2">{p.description}</p>
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-xs text-slate-500">
+                      <span>Status: {p.status}</span>
+                      <span>{p.tasks?.length || 0} Tasks</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-slate-700 rounded-full overflow-hidden">
+                      <div className="h-full bg-blue-500" style={{ width: `${p.progress}%` }}></div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <button 
+                onClick={() => window.location.href='/dashboard/projects'}
+                className="bg-slate-800/20 border-2 border-dashed border-slate-700 rounded-2xl p-6 flex flex-col items-center justify-center text-slate-400 hover:text-white hover:border-slate-500 transition-all group"
+              >
+                <PlusCircle className="w-8 h-8 mb-2 group-hover:scale-110 transition-transform" />
+                <span className="font-medium">Create New Project</span>
+              </button>
+            </div>
           </div>
         )}
       </main>
