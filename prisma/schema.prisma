@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -12,11 +12,13 @@ model User {
   email               String           @unique
   passwordHash        String
   name                String
-  role                String           @default("MEMBER") // ADMIN or MEMBER
+  role                String           @default("TASKER") // ADMIN or TASKER
+  department          String?
   forgotPasswordToken String?
   projectsOwned       Project[]        @relation("ProjectOwner")
   projectMemberships  ProjectMember[]
   tasksAssigned       Task[]           @relation("TaskAssignee")
+  tasksCreated        Task[]           @relation("TaskAssignor")
   comments            Comment[]
   notifications       Notification[]
   createdAt           DateTime         @default(now())
@@ -59,6 +61,8 @@ model Task {
   project      Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   assignedToId String?
   assignedTo   User?     @relation("TaskAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  assignedById String?
+  assignedBy   User?     @relation("TaskAssignor", fields: [assignedById], references: [id], onDelete: SetNull)
   comments     Comment[]
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt

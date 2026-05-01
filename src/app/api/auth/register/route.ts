@@ -5,7 +5,7 @@ import { signToken } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
-    const { email, password, name } = await request.json();
+    const { email, password, name, role: requestedRole } = await request.json();
     
     if (!email || !password || !name) {
       return NextResponse.json({ error: "Missing fields" }, { status: 400 });
@@ -17,9 +17,8 @@ export async function POST(request: Request) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    // First user becomes ADMIN automatically
-    const userCount = await prisma.user.count();
-    const role = userCount === 0 ? "ADMIN" : "MEMBER";
+    // If a role is requested, use it, otherwise default to TASKER
+    const role = requestedRole || "TASKER";
 
     const user = await prisma.user.create({
       data: { email, passwordHash: hashedPassword, name, role },
