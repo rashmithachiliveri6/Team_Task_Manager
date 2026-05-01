@@ -61,7 +61,7 @@ export default function ProjectsView() {
     <div>
       <div className="page-header">
         <h1 className="page-title">Projects</h1>
-        {user?.role === "ADMIN" && (
+        {user && String(user.role).toUpperCase() === "ADMIN" && (
           <button className="btn btn-primary" onClick={() => setShowModal(true)}>+ New Project</button>
         )}
       </div>
